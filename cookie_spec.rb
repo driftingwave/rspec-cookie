@@ -22,13 +22,19 @@ describe Cookie do
   end
 
   describe "#type" do
-    it "returns the type of the cookie"
+    it "returns the type of the cookie" do
+      cookie.type.should eq(type)
+    end
   end
 
   describe "#bake!" do
-    it "requires an integer time argument"
+    it "requires an integer time argument" do
+      expect { cookie.bake! }.to raise_error(ArgumentError)
+    end
 
-    it "returns the cookie object"
+    it "returns the cookie object" do
+      cookie.bake!(0).should be_a(Cookie)
+    end
 
     it "changes the status of the cookie when given enough time" do
       expect { cookie.bake!(10) }.to change(cookie, :status)
@@ -36,26 +42,40 @@ describe Cookie do
   end
 
   describe "#status" do
-    it "returns the cookie's current status"
+    it "returns the cookie's current status" do
+      expect { cookie.status }.to be_true
+    end
 
     context "when unbaked" do
-      it "is `:doughy`" 
+      it "is `:doughy`" do
+        cookie.status.should eq(:doughy)
+      end
     end
 
     context "when baked for less than 7 minutes" do
-      it "is `:doughy`"
-    end  
+      let(:time_baked) { @time_baked < 7 }
+
+      it "is `:doughy`" do
+        cookie.status.should eq(:doughy)
+      end
+    end
 
     context "when baked for at least 7 but less than 10 minutes" do
-      it "is `:almost_ready`"
+      it "is `:almost_ready`" do
+        cookie.bake!(9).status.should eq(:almost_ready)
+      end
     end
 
     context "when baked for at least 10 but less than 12 minutes" do
-      it "is `:ready`"
+      it "is `:ready`" do
+        cookie.bake!(11).status.should eq(:ready)
+      end
     end
 
     context "when baked for at least 12 minutes" do
-      it "is `:burned`"
+      it "is `:burned`" do
+        cookie.bake!(14).status.should eq(:burned)
+      end
     end
   end
 end
